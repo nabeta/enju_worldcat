@@ -51,7 +51,7 @@ module EnjuWorldcat
       per_page = options[:per_page] || 10
       total_entries = options[:total_entries]
 
-      doc = REXML::Document.new open("http://xisbn.worldcat.org/webservices/xid/isbn/#{self.isbn}?method=getEditions&format=xml&fl=*")
+      doc = REXML::Document.new APICache.get("http://xisbn.worldcat.org/webservices/xid/isbn/#{self.isbn}?method=getEditions&format=xml&fl=*")
       isbn_array = REXML::XPath.match(doc, '/rsp/isbn/')
       manifestations = []
       isbn_array.each do |isbn|
