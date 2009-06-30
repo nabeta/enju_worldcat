@@ -51,6 +51,8 @@ module EnjuWorldcat
       per_page = options[:per_page] || 10
       total_entries = options[:total_entries]
 
+      #doc = REXML::Document.new open("http://xisbn.worldcat.org/webservices/xid/isbn/#{self.isbn}?method=getEditions&format=xml&fl=*")
+      #doc = Rails.cache.fetch("xisbn_#{self.isbn}"){REXML::Document.new open("http://xisbn.worldcat.org/webservices/xid/isbn/#{self.isbn}?method=getEditions&format=xml&fl=*")}
       doc = REXML::Document.new APICache.get("http://xisbn.worldcat.org/webservices/xid/isbn/#{self.isbn}?method=getEditions&format=xml&fl=*")
       isbn_array = REXML::XPath.match(doc, '/rsp/isbn/')
       manifestations = []
@@ -69,6 +71,13 @@ module EnjuWorldcat
         isbns = manifestations[(page - 1) * per_page, per_page]
         pager.replace isbns
       end
+    end
+
+    def send_xisbn_ping
+      body = open(self.url.rewrite_my_url + ".xml?mode=related").read
+      # This is an invalid URL
+      http = Net::HTTP.new('www.worldcat.example.org')
+      http.post('/webservices/endpoint', body).body
     end
 
   end
