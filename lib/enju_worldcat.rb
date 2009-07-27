@@ -1,4 +1,5 @@
 require 'will_paginate'
+
 module EnjuWorldcat
   def self.included(base)
     base.extend ClassMethods
@@ -52,7 +53,6 @@ module EnjuWorldcat
       total_entries = options[:total_entries]
 
       doc = REXML::Document.new open("http://xisbn.worldcat.org/webservices/xid/isbn/#{self.isbn}?method=getEditions&format=xml&fl=*")
-      #doc = REXML::Document.new APICache.get("http://xisbn.worldcat.org/webservices/xid/isbn/#{self.isbn}?method=getEditions&format=xml&fl=*")
       isbn_array = REXML::XPath.match(doc, '/rsp/isbn/')
       manifestations = []
       isbn_array.each do |isbn|
@@ -67,7 +67,7 @@ module EnjuWorldcat
       end
       WillPaginate::Collection.create(page, per_page, total_entries) do |pager|
         pager.total_entries = manifestations.size
-        isbns = manifestations[(page - 1) * per_page, per_page]
+        isbns = manifestations[(page - 1) * per_page, per_page] || []
         pager.replace isbns
       end
     end
@@ -80,4 +80,5 @@ module EnjuWorldcat
     end
 
   end
+
 end

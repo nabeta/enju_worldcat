@@ -1,38 +1,14 @@
 EnjuWorldcat
 =========
 
-a plugin to search and get WorldCat record.
+Project Next-L EnjuでWorldCatのレコードを取得するためのプラグインです。
 
-This plugin is intended for Project Next-L Enju, an open-source integrated library management system, but it may work well with other Rails projects.
-http://wiki.github.com/nabeta/next-l
-
-Requirement
-=======
-
-- nabeta-wcapi gem: http://github.com/nabeta/wcapi/tree/master
-- mloughran-api_cache gem: http://github.com/mloughran/api_cache/tree/master
-- your Rails project
+a plugin for Project Next-L Enju to search and get WorldCat record.
 
 Example
 =======
 
-Require wcapi and api_cache gems.
-
-config/environment.rb:
------
-config.gem "mloughran-api_cache", :lib => "api_cache"
-config.gem "nabeta-wcapi", :lib => "wcapi"
------
-
-Get your own WorldCat API key and put the following lines in your config/environment.rb.
-
-config/environment.rb:
------
-WORLDCAT_API_KEY = 'your api key'
-APICache.start(APICache::MemoryStore)
------
-
-Include 'enju_worldcat' to your ActiveRecord model.
+include 'enju_worldcat' to your ActiveRecord model.
 
 app/models/manifestation.rb
 -----
@@ -41,19 +17,20 @@ class Manifestation < ActiveRecord::Base
 end
 -----
 
-Please note that the instance of this model must have oclc_number or isbn attributes in order to retrieve records. If both oclc_number and isbn are present, oclc_number is used.
-
-$ script/console
->> isbn = '4797340045'
-=> "4797340045"
->> record = Manifestation.search_worldcat_by_id(isbn)
->> record[:title]
+>> isbn = '4797336617'
+=>
+>> Manifestation.get_record_by_isbn(isbn)[:title]
 => "Tanoshii rubī :"
->> record[:link]
+>> Manifestation.get_record_by_isbn(isbn)[:link]
 => "http://www.worldcat.org/oclc/169991343"
->> m = Manifestation.find_by_isbn(isbn)
-=> #<Manifestation id: 4180, original_title: "Rubyレシピブック", oclc_number: nil, isbn: "4797340045">
->> m.worldcat_record
-=> {:xml=>"<record xmlns='http://www.loc.gov/MARC21/slim'>\n ...", :subtitle=>"ekisupāto no tameno ōyō reshipishū.", :link=>"http://www.worldcat.org/oclc/166747574", :summary=>"", :citation=>"", :title=>"Rubī kukku bukku :", :id=>"166747574", :author=>["Carlson, Lucas.", "Richardson, Leonard,"]}
 
-Copyright (c) 2009 Kosuke Tanabe
+>> m = Manifestation.find_by_isbn(isbn)
+=> #<Manifestation id: 2727, original_title: "たのしいRuby 第2版 Rubyではじめる気軽?...", created_at: "2007-11-19 17:55:41", updated_at: "2009-03-08 20:52:12", isbn: "4797336617">
+>> m.isbn
+=> "4797336617"
+>> m.worldcat_record
+=>
+>> m.worldcat_location
+>> m.worldcat_citation
+
+Copyright (c) 2009 Kosuke Tanabe, released under the MIT license
