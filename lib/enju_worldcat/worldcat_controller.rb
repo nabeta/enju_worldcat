@@ -2,7 +2,7 @@ require "rtranslate"
 
 module WorldcatController
   def self.included(base)
-    base.extend ClassMethods
+    base.send :include, ClassMethods
   end
 
   module ClassMethods
