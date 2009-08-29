@@ -11,14 +11,14 @@ module EnjuWorldcat
       include EnjuWorldcat::InstanceMethods
     end
 
-    def search_worldcat(options = {})
+    def search_worldcat(query, options = {})
       options = {:format => 'atom', :page => 1, :per_page => 10}.merge(options)
       #client = WCAPI::Client.new(:wskey => WORLDCAT_API_KEY)
       if options[:page].to_i < 1
         options[:page] = 1
       end
       startrecord = options[:page] * options[:per_page]
-      response = @@client.OpenSearch(:q => options[:query], :format => options[:format], :start => startrecord, :count => options[:per_page], :cformat => 'all')
+      response = @@client.OpenSearch(:q => query, :format => options[:format], :start => startrecord, :count => options[:per_page], :cformat => 'all')
     rescue
       nil
     end
